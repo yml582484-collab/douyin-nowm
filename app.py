@@ -7,6 +7,7 @@
 import json
 import re
 import socket
+import threading
 from urllib.parse import quote
 
 import requests
@@ -235,8 +236,11 @@ def find_item_list(obj):
 
 
 def fetch_item(aid):
-    """从分享页 / 旧接口获取作品数据"""
+    """从分享页 / 旧接口获取作品数据（带 ttwid cookie 才能拿到 SSR 数据）"""
     headers = {'User-Agent': MOBILE_UA, 'Referer': 'https://www.douyin.com/'}
+    ttwid = get_ttwid()
+    if ttwid:
+        headers['Cookie'] = f'ttwid={ttwid}'
     for path in (f'https://www.iesdouyin.com/share/video/{aid}/',
                  f'https://www.iesdouyin.com/share/slides/{aid}/',
                  f'https://www.iesdouyin.com/share/note/{aid}/'):
@@ -295,6 +299,192 @@ def build_result(item):
     }
 
 
+_TTWID = {'v': None}
+
+
+def get_ttwid():
+    """获取抖音 ttwid cookie（突破分享页登录墙的关键）"""
+    if _TTWID['v']:
+        return _TTWID['v']
+    try:
+        s = requests.Session()
+        s.headers.update({'User-Agent': MOBILE_UA})
+        s.post('https://ttwid.bytedance.com/ttwid/union/register/',
+               json={'region': 'cn', 'aid': 1768, 'needFid': False,
+                     'service': 'www.ixigua.com',
+                     'migrate_info': {'ticket': '', 'source': 'node'},
+                     'cbUrlProtocol': 'https', 'union': True},
+               timeout=15)
+        _TTWID['v'] = s.cookies.get('ttwid')
+    except Exception:
+        pass
+    return _TTWID['v']
+
+
+STEALTH_JS = """
+Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+Object.defineProperty(navigator, 'languages', {get: () => ['zh-CN','zh']});
+Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3,4,5]});
+window.chrome = { runtime: {} };
+const oq = window.navigator.permissions.query;
+window.navigator.permissions.query = (p) => (p.name === 'notifications'
+  ? Promise.resolve({state: Notification.permission}) : oq(p));
+"""
+
+_PW_LOCK = threading.Lock()
+
+
+def _clean_note_images(urls):
+    """从抓到的图片 URL 里筛出真正的图文内容，去掉头像/封面/相关推荐缩略图。"""
+    out, seen = [], set()
+    for u in urls:
+        if not u:
+            continue
+        if 'aweme-avatar' in u or '/100x100/' in u or 'cropcenter' in u:
+            continue
+        if 'biz_tag=aweme_images' not in u:
+            continue
+        if 'sc=cover' in u:
+            continue
+        oid = re.search(r'/(o[A-Za-z0-9_\-]+)~', u)
+        key = oid.group(1) if oid else u.split('?')[0]
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(u)
+    return out
+
+
+def _pick_videos(urls):
+    out = []
+    for u in urls:
+        if not u:
+            continue
+        if 'douyinvod' in u or (u.split('?')[0].endswith('.mp4')):
+            if u not in out:
+                out.append(u)
+    return out
+
+
+def fetch_item_browser(aid):
+    """无头浏览器渲染 + 网络抓包：拦截前端自己发起的带签名接口和真实媒体直链。
+    绕过 a_bogus 签名与登录墙。返回 item 结构 dict 或 None。"""
+    try:
+        from playwright.sync_api import sync_playwright
+    except Exception:
+        return None
+
+    box = {'api': None, 'imgs': set(), 'vids': set(), 'desc': '', 'author': ''}
+    ttwid = get_ttwid()
+
+    def on_response(resp):
+        u = resp.url
+        # 1) 媒体直链
+        try:
+            if any(d in u for d in ('douyinpic', 'byteimg', 'zjcdn')):
+                box['imgs'].add(u)
+            elif 'douyinvod' in u or u.split('?')[0].endswith('.mp4'):
+                box['vids'].add(u)
+        except Exception:
+            pass
+        # 2) 接口 JSON（匹配本作品 id，取元数据 + 视频直链）
+        if 'aweme' not in u:
+            return
+        try:
+            j = resp.json()
+        except Exception:
+            return
+        if not isinstance(j, dict):
+            return
+        items = []
+        if isinstance(j.get('aweme_detail'), dict):
+            items.append(j['aweme_detail'])
+        for k in ('aweme_list', 'item_list'):
+            if isinstance(j.get(k), list):
+                items += [x for x in j[k] if isinstance(x, dict)]
+        for it in items:
+            if str(it.get('aweme_id')) == str(aid) and not box['api']:
+                box['api'] = it
+                box['desc'] = it.get('desc') or ''
+                box['author'] = ((it.get('author') or {}).get('nickname')) or ''
+
+    with _PW_LOCK:
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True, args=[
+                    '--no-sandbox', '--disable-blink-features=AutomationControlled'])
+                ctx = browser.new_context(
+                    user_agent=MOBILE_UA, viewport={'width': 390, 'height': 844},
+                    is_mobile=True, locale='zh-CN', device_scale_factor=2)
+                ctx.add_init_script(STEALTH_JS)
+                if ttwid:
+                    for dom in ('.douyin.com', '.iesdouyin.com'):
+                        ctx.add_cookies([{'name': 'ttwid', 'value': ttwid,
+                                          'domain': dom, 'path': '/'}])
+                page = ctx.new_page()
+                page.on('response', on_response)
+                try:
+                    page.goto(f'https://www.douyin.com/video/{aid}',
+                              wait_until='domcontentloaded', timeout=45000)
+                    page.wait_for_load_state('networkidle', timeout=12000)
+                except Exception:
+                    pass
+                # 图文作品需要等图片渲染；顺便滚一下触发懒加载
+                try:
+                    page.wait_for_timeout(2500)
+                    page.evaluate("window.scrollTo(0, document.body.scrollHeight/2)")
+                    page.wait_for_timeout(1200)
+                except Exception:
+                    pass
+                # DOM 兜底补图片
+                try:
+                    dom_imgs = page.evaluate("""() => [...document.querySelectorAll('img')]
+                        .map(i=>i.currentSrc||i.src)
+                        .filter(u=>/douyinpic|byteimg|zjcdn/.test(u))""")
+                    for u in dom_imgs:
+                        box['imgs'].add(u)
+                    if not box['desc']:
+                        box['desc'] = page.evaluate(
+                            "() => (document.querySelector('[data-e2e=\"video-desc\"],.title,h1')||{}).innerText || ''") or ''
+                except Exception:
+                    pass
+                browser.close()
+        except Exception:
+            pass
+
+    api = box['api'] or {}
+    # 视频：优先接口里的 play_addr（无水印），其次网络抓到的 mp4
+    play = ''
+    video = api.get('video') or {}
+    ul = ((video.get('play_addr') or {}).get('url_list') or [])
+    if ul:
+        play = ul[0].replace('playwm', 'play')
+    net_vids = _pick_videos(box['vids'])
+    if not play and net_vids:
+        play = net_vids[0]
+
+    # 图文：优先接口 images，其次网络抓包过滤
+    images = []
+    for im in api.get('images') or []:
+        iul = (im or {}).get('url_list') or []
+        if iul:
+            images.append(iul[0])
+    if not images:
+        images = _clean_note_images(box['imgs'])
+
+    if not play and not images:
+        return None
+
+    item = {
+        'desc': box['desc'] or (api.get('desc') or ''),
+        'author': {'nickname': box['author']},
+        'video': {'play_addr': {'url_list': [play]}, 'duration': video.get('duration', 0)} if play else {},
+        'images': [{'url_list': [u]} for u in images],
+    }
+    return item
+
+
+
 def check_host(url):
     from urllib.parse import urlparse
     host = (urlparse(url).hostname or '').lower()
@@ -336,11 +526,13 @@ def api_parse():
             return jsonify({'ok': False, 'error': '无法从链接中识别视频 ID（可能是直播/主页/合集链接）'})
 
     item = fetch_item(aid)
-    if not item:
-        return jsonify({'ok': False, 'error': '未获取到作品数据，视频可能已删除、设为私密或接口失效'})
-    result = build_result(item)
+    result = build_result(item) if item else None
     if not result:
-        return jsonify({'ok': False, 'error': '该作品没有可下载的视频/图片'})
+        # SSR 拿不到（图文作品/反爬），回退到无头浏览器渲染拦截
+        item = fetch_item_browser(aid)
+        result = build_result(item) if item else None
+    if not result:
+        return jsonify({'ok': False, 'error': '未获取到作品数据：视频可能已删除/设为私密，或该作品需要登录、抖音风控拦截'})
     result['aweme_id'] = aid
     return jsonify(result)
 

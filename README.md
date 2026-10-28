@@ -51,9 +51,14 @@ cloudflared tunnel --url http://127.0.0.1:8765
 ## 工作原理
 
 1. 从分享口令里用正则提取短链，跟随跳转拿到视频 `aweme_id`。
-2. 请求 `iesdouyin.com` 分享页，解析页面里的 `_ROUTER_DATA` JSON。
-3. 取 `video.play_addr`，把地址里的 `playwm` 换成 `play` → 得到无水印原视频。
+2. **快速路径（SSR）**：带 `ttwid` cookie 请求 `iesdouyin.com` 分享页，解析 `_ROUTER_DATA` 里的 `item_list`，取 `play_addr` 把 `playwm` 换成 `play` → 无水印原视频。
+3. **回退路径（无头浏览器）**：SSR 拿不到时（图文/风控），用 Playwright + ttwid + 反检测渲染页面，拦截前端带 `a_bogus` 签名的接口响应与真实媒体直链。
 4. 后端代理下载（带正确 Referer/UA），绕过抖音 CDN 防盗链，转发给手机保存。
+
+## 实测结论（2026-10）
+
+- ✅ **视频作品**：解析 + 无水印原视频下载，全链路通过（MP4 结构完整）。
+- ⚠️ **图文作品**：能解析并下载图片，但抖音对图文的无水印原图管控更严，拿到的是**带抖音号水印**的展示图。
 
 ## 接口
 

@@ -31,12 +31,21 @@ ID_PATTERNS = [
 ALLOWED_HOSTS = ('douyin.com', 'douyinpic.com', 'iesdouyin.com', 'zjcdn.com',
                  'snssdk.com', 'bytecdn.cn', 'byteimg.com', 'amemv.com', 'pstatp.com')
 
+# 主屏幕图标（Pillow 生成，base64 内嵌）
+ICON_180_B64 = "iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADtUlEQVR4nO3dMW4TURiFURvRUZgoiAZRUrIJFsEiWQSboIMS0SAksoNBLsaMQ4Jje2bee/edU00kF6Po09Vf2dvd7nbYQIhnpV8A5iRoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgidJt0K9/fDv6++7u1+H599sPBd6IOXQb9Bj1NOx91GPY+6iF3Z6ug35srbdfPh2eRd2W7W53O2w6dD/iry9uHvzc8P7j4fnm++fF34vrWOgTrHVbLPSJhZ6y1vUT9BlBj4RdLyfHBZwh9bLQFyz0lLWui4W+krWui4W+cqGnrHV5gp4x6JGwy3FyLMAZUo6FXmChp6z1uiz0wqz1uiz0wgs9Za2XJ+gVgx4JezlOjgKcIcux0AUWespaz8tCF2at52WhCy/0lLW+nqArCnok7Ms5OSrkDLmcha5woaes9XksdOWs9XksdOULPWWtTxN0Q0GPhP04J0eDnCGPs9ANLvSUtT5moRtnrY9Z6MYXemrwtWWCTgp61HPYTo5A246/PdXJEbjQPa+1hQ637WytLXT4Qve21oLuKOgewnZydGgbfIZY6A4XOnmtLXTntmFrbaE7X+i0tX5e+gUobwgIeeTk6NwQFPOehe7UEBbySNCdGUJDHjk5OjKEx7xnoTswdBDyyEKHGzqKec9Chxo6C3kk6DBDpyGPnBxBhs5j3rPQAYT8l6AbJuR/OTkaJeaHWejGCPn/BN0IIT+Nk6MBYn46C10xIZ9P0BUS8uWcHJUR83UsdCWEPA8LXQExz8dCFyTk+Qm6ACEvx8mxMjEvy0KvRMjrEPTChLwuJ8eCxLw+C70AIZcj6BkJuTwnx0zEXAcLfSUh10XQFxJynZwcFxBzvSz0GYRcPwv9RGJug4U+QchtEfQjhNwmJ8dms/n55t3RP0XM7ep6oe+H/PLlq8Pv9fX6ZYet6/Z3Csnk5CCKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogmaT5A+nsWjnOb4dqQAAAABJRU5ErkJggg=="
+ICON_512_B64 = "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"
+
 INDEX_HTML = r"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="去水印">
+<meta name="theme-color" content="#0f0f13">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/icon-180.png">
+<link rel="manifest" href="/manifest.webmanifest">
 <title>抖音去水印 · 个人工具</title>
 <style>
   :root { color-scheme: dark; }
@@ -59,8 +68,13 @@ INDEX_HTML = r"""<!DOCTYPE html>
   .btn {
     display: block; width: 100%; margin-top: 12px; padding: 14px;
     border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+    line-height: 1.2; text-align: center;
     background: linear-gradient(90deg,#25f4ee,#4a7cff); color: #06121a; cursor: pointer;
   }
+  a.btn { text-decoration: none; display: flex; align-items: center; justify-content: center; }
+  .btn-row2 { display: flex; gap: 10px; margin-top: 12px; }
+  .btn-row2 .btn { margin-top: 0; flex: 1; }
+  .btn-row2 .btn.ghost { flex: 0 0 92px; }
   .btn:disabled { opacity: .5; }
   .btn.pink { background: linear-gradient(90deg,#fe2c55,#ff7a45); color: #fff; }
   .btn.ghost { background: #1a1a22; color: #ccc; border: 1px solid #2e2e3a; font-weight: 400; }
@@ -72,6 +86,17 @@ INDEX_HTML = r"""<!DOCTYPE html>
   .author { margin-top: 6px; font-size: 13px; color: #888; }
   .imgs { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-top: 12px; }
   .imgs img { width: 100%; border-radius: 8px; aspect-ratio: 3/4; object-fit: cover; }
+  .pager { margin-top: 12px; }
+  .pager-img { width: 100%; border-radius: 10px; background: #000; max-height: 62vh; object-fit: contain; display: block; min-height: 200px; }
+  .pager-bar { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 10px; }
+  .pgbtn { width: 46px; height: 38px; border-radius: 8px; border: 1px solid #2e2e3a; background: #1a1a22; color: #eee; font-size: 18px; cursor: pointer; }
+  .pgbtn:active { opacity: .7; }
+  .pgcnt { font-size: 14px; color: #ccc; min-width: 48px; text-align: center; }
+  .pgchk { display: flex; align-items: center; justify-content: center; margin-top: 8px; font-size: 13px; color: #ccc; cursor: pointer; }
+  .pgchk input { width: 16px; height: 16px; margin-right: 6px; accent-color: #fe2c55; }
+  .pager { position: relative; }
+  video.pager-img { display: none; }
+  .live-chip { position: absolute; top: 10px; left: 10px; background: rgba(254,44,85,.92); color: #fff; font-size: 12px; padding: 3px 10px; border-radius: 10px; display: none; }
   .foot { margin-top: 30px; text-align: center; color: #555; font-size: 12px; line-height: 1.8; }
   .spin { display:inline-block; width:14px; height:14px; border:2px solid #999; border-top-color:transparent; border-radius:50%; animation: r .8s linear infinite; vertical-align:-2px; margin-right:6px;}
   @keyframes r { to { transform: rotate(360deg); } }
@@ -83,7 +108,11 @@ INDEX_HTML = r"""<!DOCTYPE html>
   <p class="sub">粘贴抖音分享链接或整段口令，解析无水印原视频 · 仅个人使用</p>
 
   <textarea id="input" placeholder="例如：8.88 abc:/ 复制打开抖音，看看【xxx】https://v.douyin.com/xxxxxx/"></textarea>
-  <button class="btn" id="parseBtn" onclick="parse()">解析视频</button>
+  <div class="btn-row2">
+    <button class="btn" id="parseBtn" onclick="parse()">解析作品</button>
+    <button class="btn ghost" id="pasteBtn" onclick="pasteLink()">📋 粘贴</button>
+    <button class="btn ghost" id="clearBtn" onclick="clearAll()">🗑 清空</button>
+  </div>
   <div id="msg"></div>
 
   <div class="card" id="card">
@@ -134,9 +163,55 @@ function render(d) {
     v.controls = true; v.playsInline = true; v.setAttribute('playsinline','');
     v.preload = 'metadata';
     media.appendChild(v);
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+      || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const b1 = document.createElement('a');
-    b1.className = 'btn pink'; b1.style.marginTop = '12px'; b1.textContent = '⬇ 保存无水印视频';
-    b1.href = '/api/download?url=' + encodeURIComponent(d.play) + '&name=' + encodeURIComponent(d.desc || 'douyin');
+    b1.className = 'btn pink'; b1.style.marginTop = '12px';
+    const fileUrl = '/api/file?url=' + encodeURIComponent(d.play);
+    const blobCache = {};
+    const doShareFile = (file, okMsg) => {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        return navigator.share({ files: [file], title: (d.desc || 'douyin').slice(0, 40) })
+          .then(() => { setMsg('✓ 已保存到相册', 'ok'); })
+          .catch(e => {
+            if (e && e.name === 'AbortError') { setMsg('✓ 分享面板已关闭 · 已选「存储视频」的已进相册', 'ok'); return; }
+            setMsg('✗ 分享失败: ' + e.message, 'err');
+          });
+      }
+      return Promise.reject(new Error('unsupported'));
+    };
+    if (isIOS) {
+      b1.textContent = '📲 保存到相册';
+      b1.href = 'javascript:void(0)';
+      b1.onclick = async (ev) => {
+        ev.preventDefault();
+        if (blobCache[d.play]) {
+          try { await doShareFile(blobCache[d.play]); } catch (e) { /* unsupported */ }
+          return;
+        }
+        b1.textContent = '⏳ 正在获取视频...';
+        try {
+          const resp = await fetch(fileUrl);
+          if (!resp.ok) throw new Error('获取视频失败 ' + resp.status);
+          const blob = await resp.blob();
+          const file = new File([blob], 'douyin.mp4', { type: 'video/mp4' });
+          blobCache[d.play] = file;
+          b1.textContent = '📲 保存到相册';
+          try { await doShareFile(file); }
+          catch (e) {
+            setMsg('此设备不支持直存相册，改用下载方式', 'err');
+            window.location.href = '/api/download?url=' + encodeURIComponent(d.play) + '&name=' + encodeURIComponent(d.desc || 'douyin');
+          }
+        } catch (e) {
+          b1.textContent = '📲 保存到相册';
+          setMsg('✗ ' + e.message + '，改用下载方式', 'err');
+          window.location.href = '/api/download?url=' + encodeURIComponent(d.play) + '&name=' + encodeURIComponent(d.desc || 'douyin');
+        }
+      };
+    } else {
+      b1.textContent = '⬇ 保存无水印视频';
+      b1.href = '/api/download?url=' + encodeURIComponent(d.play) + '&name=' + encodeURIComponent(d.desc || 'douyin');
+    }
     acts.appendChild(b1);
     const b2 = document.createElement('button');
     b2.className = 'btn ghost'; b2.textContent = '复制无水印直链';
@@ -150,26 +225,195 @@ function render(d) {
     acts.appendChild(b2);
     const tip = document.createElement('p');
     tip.style.cssText = 'margin-top:10px;font-size:12px;color:#777;line-height:1.6';
-    tip.textContent = 'iPhone：点「保存无水印视频」会开始下载，完成后到 Safari 下载项 / 「文件」App 里查看；也可直接在上方视频播放器里全屏播放后 AirDrop。';
+    tip.textContent = isIOS
+      ? 'iPhone/iPad：点「保存到相册」→ 系统分享面板弹出 → 选「存储视频/存储到相册」即完成。若提示不支持，会自动改用下载方式。'
+      : '点「保存无水印视频」开始下载；iPhone 也可以在视频播放器里长按画面选择存储。';
     acts.appendChild(tip);
   } else {
-    const div = document.createElement('div'); div.className = 'imgs';
-    (d.images || []).forEach(u => {
-      const a = document.createElement('a');
-      a.href = '/api/file?url=' + encodeURIComponent(u); a.target = '_blank';
-      const img = document.createElement('img'); img.src = a.href; img.loading = 'lazy';
-      a.appendChild(img); div.appendChild(a);
-    });
-    media.appendChild(div);
-    const tip = document.createElement('p');
-    tip.style.cssText = 'margin-top:10px;font-size:12px;color:#777';
-    tip.textContent = '图文作品：点开大图后长按保存，或用 Safari 分享按钮存储到照片。';
-    acts.appendChild(tip);
+    const imgs = d.images || [];
+    const ivs = d.image_videos || [];
+    const isLive = i => !!(ivs[i]);
+    const mediaOf = i => isLive(i) ? ivs[i] : imgs[i];
+    if (!imgs.length) {
+      const tip = document.createElement('p');
+      tip.style.cssText = 'margin-top:10px;font-size:12px;color:#777';
+      tip.textContent = '未获取到图片内容';
+      acts.appendChild(tip);
+    } else {
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      let idx = 0;
+      const checked = imgs.map(() => true);
+      const proxy = u => '/api/file?url=' + encodeURIComponent(u);
+      const objCache = {};
+      const loadInto = i => {
+        const key = mediaOf(i);
+        if (objCache[key]) return Promise.resolve(objCache[key]);
+        return fetch(proxy(key)).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+          .then(b => { objCache[key] = URL.createObjectURL(b); return objCache[key]; });
+      };
+      const stage = document.createElement('div'); stage.className = 'pager';
+      const imgEl = document.createElement('img'); imgEl.className = 'pager-img';
+      imgEl.src = proxy(imgs[0]);
+      const vidEl = document.createElement('video'); vidEl.className = 'pager-img';
+      vidEl.setAttribute('playsinline', ''); vidEl.muted = true; vidEl.loop = true;
+      const liveChip = document.createElement('div');
+      liveChip.className = 'live-chip'; liveChip.textContent = '实况 · 动态版';
+      stage.appendChild(imgEl); stage.appendChild(vidEl); stage.appendChild(liveChip);
+      const bar = document.createElement('div'); bar.className = 'pager-bar';
+      const prev = document.createElement('button'); prev.className = 'pgbtn'; prev.textContent = '‹';
+      const counter = document.createElement('span'); counter.className = 'pgcnt';
+      const next = document.createElement('button'); next.className = 'pgbtn'; next.textContent = '›';
+      const chk = document.createElement('label'); chk.className = 'pgchk';
+      const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = true;
+      const cbText = document.createTextNode('保存这一张');
+      chk.appendChild(cb); chk.appendChild(cbText);
+      counter.textContent = '1/' + imgs.length;
+      const show = () => {
+        cb.checked = checked[idx];
+        counter.textContent = '加载中 ' + (idx + 1) + '/' + imgs.length;
+        liveChip.style.display = 'none';
+        loadInto(idx).then(u => {
+          if (isLive(idx)) {
+            imgEl.style.display = 'none';
+            vidEl.style.display = 'block';
+            if (vidEl.getAttribute('src') !== u) vidEl.src = u;
+            vidEl.play().catch(() => {});
+            liveChip.style.display = 'block';
+            cbText.textContent = '保存实况动态视频';
+          } else {
+            vidEl.pause();
+            vidEl.style.display = 'none';
+            imgEl.style.display = 'block';
+            imgEl.src = u;
+            cbText.textContent = '保存这一张';
+          }
+          counter.textContent = (idx + 1) + '/' + imgs.length;
+        }).catch(() => { counter.textContent = (idx + 1) + '/' + imgs.length + ' 加载失败'; });
+      };
+      prev.onclick = () => { idx = (idx - 1 + imgs.length) % imgs.length; show(); };
+      next.onclick = () => { idx = (idx + 1) % imgs.length; show(); };
+      cb.onchange = () => { checked[idx] = cb.checked; updateSave(); };
+      bar.appendChild(prev); bar.appendChild(counter); bar.appendChild(next);
+      stage.appendChild(bar); stage.appendChild(chk);
+      media.appendChild(stage);
+      imgs.forEach((_, i) => setTimeout(() => loadInto(i).catch(() => {}), 400 * i));
+
+      const save = document.createElement('button');
+      save.className = 'btn pink'; save.style.marginTop = '12px';
+      const updateSave = () => {
+        const n = checked.filter(Boolean).length;
+        save.textContent = '💾 保存选中的 ' + n + ' 张图片';
+        save.disabled = !n;
+      };
+      updateSave();
+      save.onclick = () => {
+        const sel = [];
+        imgs.forEach((u, i) => { if (checked[i]) sel.push({ url: mediaOf(i), live: isLive(i), n: i + 1 }); });
+        const openAggregatePage = () => {
+          const w = window.open('', '_blank');
+          if (!w) { alert('浏览器拦截了新标签页，请允许弹窗后重试'); return; }
+          w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8">'
+            + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            + '<title>逐张长按保存到相册</title><style>body{background:#111;color:#eee;'
+            + 'font-family:-apple-system,sans-serif;margin:0;padding:16px}'
+            + '.back{position:fixed;top:10px;right:14px;z-index:9;background:#1a1a22;border:1px solid #2e2e3a;'
+            + 'border-radius:8px;padding:8px 12px;color:#4a9eff;text-decoration:none;font-size:13px}'
+            + 'p{font-size:13px;color:#aaa;line-height:1.7}'
+            + 'img{width:100%;margin:12px 0;border-radius:8px;display:block}'
+            + '.tag{font-size:11px;color:#fe2c55}</style></head><body>'
+            + '<a class="back" href="/">← 返回工具</a>'
+            + '<p style="margin-top:48px">共 ' + sel.length + ' 张：逐张<b>长按图片 → 存储到相册</b>。标「实况」的保存的是动态视频。</p>'
+            + sel.map(it => '<div><span class="tag">' + (it.live ? '实况·动态' : '图片') + ' #' + it.n + '</span>'
+                + '<img src="' + '/api/file?url=' + encodeURIComponent(it.url) + '"></div>').join('')
+            + '</body></html>');
+          w.document.close();
+        };
+        if (isIOS) {
+          (async () => {
+            const origText = save.textContent;
+            save.disabled = true;
+            try {
+              const files = [];
+              for (let i = 0; i < sel.length; i++) {
+                const it = sel[i];
+                save.textContent = '⏳ 获取第 ' + (i + 1) + '/' + sel.length + ' 个' + (it.live ? '（实况）' : '...');
+                const r = await fetch('/api/file?url=' + encodeURIComponent(it.url));
+                if (!r.ok) throw new Error('获取失败 ' + r.status);
+                const b = await r.blob();
+                if (it.live) {
+                  files.push(new File([b], 'live-' + it.n + '.mp4', { type: 'video/mp4' }));
+                } else {
+                  const m = (it.url.match(/\.(jpe?g|png|webp|gif|heic)/i) || [null, 'jpg']);
+                  files.push(new File([b], 'img-' + it.n + '.' + m[1].toLowerCase(), { type: b.type || 'image/jpeg' }));
+                }
+              }
+              if (navigator.canShare && navigator.canShare({ files })) {
+                await navigator.share({ files, title: (d.desc || 'douyin').slice(0, 40) });
+                setMsg('✓ 已保存到相册', 'ok');
+              } else {
+                openAggregatePage();
+              }
+            } catch (e) {
+              if (e && e.name === 'AbortError') {
+                setMsg('✓ 分享面板已关闭 · 已选「存储图像/视频」的已进相册', 'ok');
+              } else {
+                openAggregatePage();
+              }
+            }
+            save.textContent = origText; save.disabled = false;
+          })();
+        } else {
+          sel.forEach((it, i) => {
+            setTimeout(() => {
+              const a = document.createElement('a');
+              a.href = '/api/download?url=' + encodeURIComponent(it.url) + '&name=' + encodeURIComponent((d.desc || 'douyin').slice(0, 30) + '-' + it.n + (it.live ? '-实况' : ''));
+              document.body.appendChild(a); a.click(); a.remove();
+            }, i * 900);
+          });
+          setMsg('开始下载选中的 ' + sel.length + ' 张，浏览器若询问「允许下载多个文件」请选允许', 'ok');
+        }
+      };
+      acts.appendChild(save);
+      const tip = document.createElement('p');
+      tip.style.cssText = 'margin-top:10px;font-size:12px;color:#777;line-height:1.6';
+      tip.textContent = '左右箭头翻页查看每一张，不想要的取消勾选再保存。';
+      acts.appendChild(tip);
+    }
   }
   $('card').style.display = 'block';
 }
 
-$('input').addEventListener('paste', () => setTimeout(() => { if ($('input').value.trim()) parse(); }, 100));
+$('input').addEventListener('paste', () => setTimeout(() => { if ($('input').value.trim() && !$('card').style.display) setMsg('已粘贴，点「解析作品」开始', 'ok'); }, 100));
+
+function clearAll() {
+  $('input').value = '';
+  $('card').style.display = 'none';
+  setMsg('', '');
+}
+
+async function pasteLink() {
+  try {
+    const t = await navigator.clipboard.readText();
+    const s = String(t || '').trim();
+    if (!s) { setMsg('剪贴板是空的', 'err'); return; }
+    $('input').value = s;
+    setMsg(/douyin/i.test(s) ? '已粘贴 ✓ 点「解析作品」开始' : '已粘贴（未识别到抖音链接，检查一下）', 'ok');
+  } catch (e) {
+    setMsg('读取剪贴板被拒绝，请长按输入框手动粘贴', 'err');
+  }
+}
+
+// 打开页面时自动识别剪贴板中的抖音链接并填入（Safari 会请求粘贴权限，拒绝则静默跳过）
+(async () => {
+  try {
+    const t = await navigator.clipboard.readText();
+    if (t && /v\.douyin\.com|douyin\.com|iesdouyin/i.test(t)) {
+      $('input').value = t.trim();
+      setMsg('已识别剪贴板中的链接 ✓ 点「解析作品」开始', 'ok');
+    }
+  } catch (e) { /* 无权限或非链接，忽略 */ }
+})();
 
 fetch('/api/info').then(r => r.json()).then(d => {
   const local = /^(localhost|127\.|192\.168\.|10\.|172\.)/.test(location.hostname);
@@ -200,20 +444,27 @@ def extract_url(text):
 
 
 def resolve_aweme_id(url):
-    """跟随短链跳转，拿到 aweme_id"""
-    r = requests.get(url, headers={'User-Agent': MOBILE_UA},
-                     allow_redirects=True, timeout=15)
-    candidates = [r.url] + [h.headers.get('Location', '') for h in r.history]
-    for u in candidates:
+    """跟随短链跳转，拿到 aweme_id（风控会弹回主页，需带 ttwid + 多次重试）"""
+    for attempt in range(4):
+        headers = {'User-Agent': MOBILE_UA}
+        ttwid = get_ttwid()
+        if ttwid:
+            headers['Cookie'] = f'ttwid={ttwid}'
+        try:
+            r = requests.get(url, headers=headers, allow_redirects=True, timeout=15)
+        except requests.RequestException:
+            continue
+        candidates = [r.url] + [h.headers.get('Location', '') for h in r.history]
+        for u in candidates:
+            for p in ID_PATTERNS:
+                m = p.search(u)
+                if m:
+                    return m.group(1)
+        # 页面内容里再找一次
         for p in ID_PATTERNS:
-            m = p.search(u)
+            m = p.search(r.text[:200000])
             if m:
                 return m.group(1)
-    # 页面内容里再找一次
-    for p in ID_PATTERNS:
-        m = p.search(r.text[:200000])
-        if m:
-            return m.group(1)
     return None
 
 
@@ -236,7 +487,8 @@ def find_item_list(obj):
 
 
 def fetch_item(aid):
-    """从分享页 / 旧接口获取作品数据（带 ttwid cookie 才能拿到 SSR 数据）"""
+    """从分享页 / 旧接口获取作品数据（带 ttwid cookie 才能拿到 SSR 数据）
+    返回 (item, kind)；kind 用于判断作品类型（note/slides 需要浏览器兜底取实况视频）"""
     headers = {'User-Agent': MOBILE_UA, 'Referer': 'https://www.douyin.com/'}
     ttwid = get_ttwid()
     if ttwid:
@@ -244,6 +496,7 @@ def fetch_item(aid):
     for path in (f'https://www.iesdouyin.com/share/video/{aid}/',
                  f'https://www.iesdouyin.com/share/slides/{aid}/',
                  f'https://www.iesdouyin.com/share/note/{aid}/'):
+        kind = path.rsplit('/', 2)[-2]
         try:
             r = requests.get(path, headers=headers, timeout=15)
             m = re.search(r'window\._ROUTER_DATA\s*=\s*(\{.+?\})\s*</script>', r.text, re.S)
@@ -252,7 +505,7 @@ def fetch_item(aid):
             data = json.loads(m.group(1))
             items = find_item_list(data)
             if items:
-                return items[0]
+                return items[0], kind
         except Exception:
             continue
     # 兜底：旧版 iteminfo 接口
@@ -261,10 +514,30 @@ def fetch_item(aid):
                          params={'item_ids': aid}, headers=headers, timeout=15)
         items = (r.json() or {}).get('item_list')
         if items:
-            return items[0]
+            return items[0], 'video'
     except Exception:
         pass
-    return None
+    return None, None
+
+
+
+
+def _best_img_url(urls):
+    """从 url_list 里挑最高画质：优先 jpeg 变体，其次 shrink 最大宽度，最后第 0 条"""
+    if not urls:
+        return None
+    for u in urls:
+        if 'aweme-images' in u and '.jpeg' in u:
+            return u
+    best, best_w = None, -1
+    for u in urls:
+        m = re.search(r'shrink:(\d+)', u)
+        w = int(m.group(1)) if m else 0
+        if '.webp' not in u:
+            w += 5000
+        if w > best_w:
+            best_w, best = w, u
+    return best or urls[0]
 
 
 def build_result(item):
@@ -273,10 +546,14 @@ def build_result(item):
     video = item.get('video') or {}
 
     images = []
+    image_videos = []
     for im in item.get('images') or []:
         ul = (im or {}).get('url_list') or []
         if ul:
-            images.append(ul[0])
+            images.append(_best_img_url(ul))
+            # 实况图：每张图可能关联一段动态视频（Live Photo 的动效部分）
+            iv = (((im or {}).get('video') or {}).get('play_addr') or {}).get('url_list') or []
+            image_videos.append(iv[0].replace('playwm', 'play') if iv else '')
 
     play = ''
     if video:
@@ -290,12 +567,13 @@ def build_result(item):
         return None
     return {
         'ok': True,
-        'type': 'video' if play else 'images',
+        'type': 'images' if images else 'video',
         'desc': desc,
         'author': author,
         'duration': duration,
         'play': play,
         'images': images,
+        'image_videos': image_videos,
     }
 
 
@@ -366,7 +644,7 @@ def _pick_videos(urls):
     return out
 
 
-def fetch_item_browser(aid):
+def fetch_item_browser(aid, kind='video'):
     """无头浏览器渲染 + 网络抓包：拦截前端自己发起的带签名接口和真实媒体直链。
     绕过 a_bogus 签名与登录墙。返回 item 结构 dict 或 None。"""
     try:
@@ -424,7 +702,7 @@ def fetch_item_browser(aid):
                 page = ctx.new_page()
                 page.on('response', on_response)
                 try:
-                    page.goto(f'https://www.douyin.com/video/{aid}',
+                    page.goto((f'https://www.iesdouyin.com/share/{kind}/{aid}/' if kind in ('note', 'slides') else f'https://www.douyin.com/{kind}/{aid}'),
                               wait_until='domcontentloaded', timeout=45000)
                     page.wait_for_load_state('networkidle', timeout=12000)
                 except Exception:
@@ -434,6 +712,16 @@ def fetch_item_browser(aid):
                     page.wait_for_timeout(2500)
                     page.evaluate("window.scrollTo(0, document.body.scrollHeight/2)")
                     page.wait_for_timeout(1200)
+                except Exception:
+                    pass
+                # 解析页面内嵌 _ROUTER_DATA（PC note 页可能带实况视频字段）
+                try:
+                    html2 = page.content()
+                    m2 = re.search(r'window\._ROUTER_DATA\s*=\s*(\{.+?\})\s*</script>', html2, re.S)
+                    if m2:
+                        ritems = find_item_list(json.loads(m2.group(1)))
+                        if ritems:
+                            box['router'] = ritems[0]
                 except Exception:
                     pass
                 # DOM 兜底补图片
@@ -463,19 +751,29 @@ def fetch_item_browser(aid):
     if not play and net_vids:
         play = net_vids[0]
 
-    # 图文：优先接口 images，其次网络抓包过滤
+    # 图文：优先接口 images，其次页面内嵌路由数据（含 jpeg 高清变体），再次网络抓包过滤
     images = []
     for im in api.get('images') or []:
         iul = (im or {}).get('url_list') or []
         if iul:
-            images.append(iul[0])
+            images.append(_best_img_url(iul))
+    if not images:
+        rimgs = (box.get('router') or {}).get('images') or []
+        for im in rimgs:
+            iul = (im or {}).get('url_list') or []
+            if iul:
+                images.append(_best_img_url(iul))
     if not images:
         images = _clean_note_images(box['imgs'])
 
     if not play and not images:
         return None
 
+    net_vid_list = _pick_videos(box['vids'])
+    rtr = box.get('router') or {}
     item = {
+        '_vids': net_vid_list[:20],
+        '_router_images': [((im.get('video') or {}).get('play_addr') or {}).get('url_list', [None])[0] for im in (rtr.get('images') or [])],
         'desc': box['desc'] or (api.get('desc') or ''),
         'author': {'nickname': box['author']},
         'video': {'play_addr': {'url_list': [play]}, 'duration': video.get('duration', 0)} if play else {},
@@ -493,6 +791,51 @@ def check_host(url):
 
 @app.route('/')
 def index():
+    return Response(INDEX_HTML, mimetype='text/html')
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return Response(status=204)
+
+import base64 as _b64
+
+
+def _icon_response(which):
+    data = _b64.b64decode(ICON_180_B64 if which == '180' else ICON_512_B64)
+    return Response(data, mimetype='image/png',
+                    headers={'Cache-Control': 'public, max-age=604800'})
+
+
+@app.route('/apple-touch-icon.png')
+@app.route('/icon-180.png')
+def icon_180():
+    return _icon_response('180')
+
+
+@app.route('/icon-512.png')
+def icon_512():
+    return _icon_response('512')
+
+
+@app.route('/manifest.webmanifest')
+def webmanifest():
+    import json
+    m = {
+        'name': '抖音去水印', 'short_name': '去水印',
+        'start_url': '/', 'scope': '/', 'display': 'standalone',
+        'background_color': '#0f0f13', 'theme_color': '#0f0f13',
+        'icons': [
+            {'src': '/icon-180.png', 'sizes': '180x180', 'type': 'image/png', 'purpose': 'any'},
+            {'src': '/icon-512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'any maskable'},
+        ],
+    }
+    return Response(json.dumps(m, ensure_ascii=False), mimetype='application/manifest+json')
+
+
+@app.errorhandler(404)
+def fallback_any_path(e):
+    # 任何未知路径（误输入、带多余字符的链接）一律回落到首页，避免整页 404
     return Response(INDEX_HTML, mimetype='text/html')
 
 
@@ -525,12 +868,43 @@ def api_parse():
         if not aid:
             return jsonify({'ok': False, 'error': '无法从链接中识别视频 ID（可能是直播/主页/合集链接）'})
 
-    item = fetch_item(aid)
-    result = build_result(item) if item else None
-    if not result:
-        # SSR 拿不到（图文作品/反爬），回退到无头浏览器渲染拦截
-        item = fetch_item_browser(aid)
-        result = build_result(item) if item else None
+    item, kind = fetch_item(aid)
+    has_media = item and (item.get('images') or ((item.get('video') or {}).get('play_addr') or {}).get('url_list'))
+    # 图集/图文作品（note/slides）的实况视频只在 App/PC 接口里：
+    # SSR 数据只有静态图，必须用无头浏览器按 note 页面拦截接口补全（代价是多花几秒）
+    is_image_work = bool(item and item.get('images'))
+    browser_kind = 'note' if is_image_work else 'video'
+    if has_media and is_image_work:
+        try:
+            item2 = fetch_item_browser(aid, browser_kind)
+            if item2 and item2.get('images'):
+                ssr_imgs = (item or {}).get('images') or []
+                for i, bim in enumerate(item2['images']):
+                    if i < len(ssr_imgs):
+                        merged = list((bim.get('url_list') or [])) + list((ssr_imgs[i] or {}).get('url_list') or [])
+                        seen, uniq = set(), []
+                        for u in merged:
+                            if u and u not in seen:
+                                seen.add(u); uniq.append(u)
+                        bim['url_list'] = uniq
+                item = item2
+        except Exception:
+            pass
+    if not has_media:
+        # SSR 拿不到/空壳（图文作品/反爬），回退到无头浏览器渲染拦截
+        item2 = fetch_item_browser(aid, browser_kind)
+        if item2:
+            item = item2
+    if not item:
+        return jsonify({'ok': False, 'error': '未获取到作品数据：视频可能已删除/设为私密，或该作品需要登录、抖音风控拦截'})
+    raw_mode = (request.get_json(silent=True) or {}).get('raw') or request.args.get('raw')
+    if raw_mode:
+        if str(raw_mode) == '2':
+            ssr_item, _ = fetch_item(aid)
+            browser_item = fetch_item_browser(aid, browser_kind)
+            return jsonify({'ok': True, 'ssr': ssr_item, 'browser': browser_item})
+        return jsonify({'ok': True, 'raw': item})
+    result = build_result(item)
     if not result:
         return jsonify({'ok': False, 'error': '未获取到作品数据：视频可能已删除/设为私密，或该作品需要登录、抖音风控拦截'})
     result['aweme_id'] = aid
@@ -559,6 +933,22 @@ def api_file():
             r.close()
 
     ctype = r.headers.get('Content-Type', 'application/octet-stream')
+
+    # 动图 webp 转为 GIF：iOS 相册不支持动画 webp，长按保存会变静态；GIF 可保留动效
+    if 'webp' in ctype.lower() or re.search(r'\.webp(?:[?#]|$)', url, re.I):
+        try:
+            from io import BytesIO
+            from PIL import Image
+            im = Image.open(BytesIO(r.content))
+            if getattr(im, 'is_animated', False):
+                out = BytesIO()
+                durs = im.info.get('duration')
+                duration = int(sum(durs) / len(durs)) if isinstance(durs, list) and durs else int(durs or 100)
+                im.save(out, format='GIF', save_all=True, duration=duration, loop=0)
+                return Response(out.getvalue(), content_type='image/gif')
+        except Exception:
+            pass  # 转换失败则按原图流式返回
+
     resp = Response(gen(), content_type=ctype)
     if r.headers.get('Content-Length'):
         resp.headers['Content-Length'] = r.headers['Content-Length']
@@ -589,8 +979,10 @@ def api_download():
             r.close()
 
     resp = Response(gen(), content_type='video/mp4')
+    m_ext = re.search(r'\.(jpe?g|png|webp|heic|gif)(?:[?#]|$)', url, re.I)
+    ext = ('.' + m_ext.group(1).lower()) if m_ext else '.mp4'
     resp.headers['Content-Disposition'] = (
-        f"attachment; filename=video.mp4; filename*=UTF-8''{quote(name)}.mp4")
+        f"attachment; filename=media{ext}; filename*=UTF-8''{quote(name)}{ext}")
     if r.headers.get('Content-Length'):
         resp.headers['Content-Length'] = r.headers['Content-Length']
     return resp
